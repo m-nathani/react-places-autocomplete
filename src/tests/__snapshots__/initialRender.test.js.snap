@@ -2,6 +2,7 @@
 
 exports[`initial render 1`] = `
 <PlacesAutocomplete
+  clearSuggestionOnSelect={false}
   debounce={200}
   highlightFirstSuggestion={false}
   onChange={[Function]}
@@ -30,6 +31,7 @@ exports[`initial render 1`] = `
 
 exports[`initial render with initial input value 1`] = `
 <PlacesAutocomplete
+  clearSuggestionOnSelect={false}
   debounce={200}
   highlightFirstSuggestion={false}
   onChange={[Function]}
@@ -58,6 +60,7 @@ exports[`initial render with initial input value 1`] = `
 
 exports[`initial render with options to props-getter 1`] = `
 <PlacesAutocomplete
+  clearSuggestionOnSelect={false}
   debounce={200}
   highlightFirstSuggestion={false}
   onChange={[Function]}

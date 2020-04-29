@@ -39,3 +39,6 @@ export const geocodeByPlaceId = placeId => {
     });
   });
 };
+
+export const getSessionToken = () =>
+  new google.maps.places.AutocompleteSessionToken();

@@ -13,6 +13,7 @@ import { compose } from './helpers';
 const formattedSuggestion = structured_formatting => ({
   mainText: structured_formatting.main_text,
   secondaryText: structured_formatting.secondary_text,
+  mainTextMatchedSubstrings: structured_formatting.main_text_matched_substrings
 });
 
 class PlacesAutocomplete extends React.Component {
@@ -55,13 +56,13 @@ class PlacesAutocomplete extends React.Component {
   init = () => {
     if (!window.google) {
       throw new Error(
-        '[react-places-autocomplete]: Google Maps JavaScript API library must be loaded. See: https://github.com/kenny-hibino/react-places-autocomplete#load-google-library'
+        '[react-places-autocomplete]: Google Maps JavaScript API library must be loaded. See: https://github.com/m-nathani/react-places-autocomplete#load-google-library'
       );
     }
 
     if (!window.google.maps.places) {
       throw new Error(
-        '[react-places-autocomplete]: Google Maps Places library must be loaded. Please add `libraries=places` to the src URL. See: https://github.com/kenny-hibino/react-places-autocomplete#load-google-library'
+        '[react-places-autocomplete]: Google Maps Places library must be loaded. Please add `libraries=places` to the src URL. See: https://github.com/m-nathani/react-places-autocomplete#load-google-library'
       );
     }
 
@@ -94,6 +95,7 @@ class PlacesAutocomplete extends React.Component {
         matchedSubstrings: p.matched_substrings,
         terms: p.terms,
         types: p.types,
+        distance_meters: p.distance_meters
       })),
     });
   };
@@ -126,7 +128,8 @@ class PlacesAutocomplete extends React.Component {
   };
 
   handleSelect = (address, placeId) => {
-    this.clearSuggestions();
+    const { clearSuggestionOnSelect } = this.props;
+    if(clearSuggestionOnSelect) this.clearSuggestions();
     if (this.props.onSelect) {
       this.props.onSelect(address, placeId);
     } else {
@@ -239,7 +242,7 @@ class PlacesAutocomplete extends React.Component {
 
   handleInputOnBlur = () => {
     if (!this.mousedownOnSuggestion) {
-      this.clearSuggestions();
+      // this.clearSuggestions();
     }
   };
 
@@ -370,17 +373,20 @@ PlacesAutocomplete.propTypes = {
   onError: PropTypes.func,
   onSelect: PropTypes.func,
   searchOptions: PropTypes.shape({
+    sessiontoken: PropTypes.string,
+    origin: PropTypes.object,
     bounds: PropTypes.object,
     componentRestrictions: PropTypes.object,
     location: PropTypes.object,
     offset: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     radius: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    types: PropTypes.array,
+    types: PropTypes.array
   }),
   debounce: PropTypes.number,
   highlightFirstSuggestion: PropTypes.bool,
   shouldFetchSuggestions: PropTypes.bool,
   googleCallbackName: PropTypes.string,
+  clearSuggestionOnSelect: PropTypes.bool
 };
 
 PlacesAutocomplete.defaultProps = {
@@ -391,6 +397,7 @@ PlacesAutocomplete.defaultProps = {
       status
     ),
   /* eslint-enable no-unused-vars, no-console */
+  clearSuggestionOnSelect: false,
   searchOptions: {},
   debounce: 200,
   highlightFirstSuggestion: false,

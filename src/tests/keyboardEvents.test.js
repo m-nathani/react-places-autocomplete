@@ -92,7 +92,7 @@ describe('keyboard events handlers', () => {
   });
 
   test('pressing Enter key will clear suggestions', () => {
-    const wrapper = mountComponent();
+    const wrapper = mountComponent({clearSuggestionOnSelect : true });
     simulateSearch(wrapper);
 
     const input = wrapper.find('input');
