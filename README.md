@@ -6,10 +6,6 @@
 
 A React component to build a customized UI for Google Maps Places Autocomplete
 
-### Demo
-
-Live demo: [hibiken.github.io/react-places-autocomplete/](https://hibiken.github.io/react-places-autocomplete/)
-
 ### Features
 
 1. Enable you to easily build a customized autocomplete dropdown powered by [Google Maps Places Library](https://developers.google.com/maps/documentation/javascript/places)
@@ -141,6 +137,8 @@ PlacesAutocomplete is a [Controlled Component](https://facebook.github.io/react/
 | [`highlightFirstSuggestion`](#highlightFirstSuggestion) | boolean  |                    | If set to `true`, first list item in the dropdown will be automatically highlighted              |
 | [`shouldFetchSuggestions`](#shouldFetchSuggestions)     | boolean  |                    | Component will hit Google Maps API only if this flag is set `true`                               |
 | [`googleCallbackName`](#googleCallbackName)             |  string  |                    | You can provide a callback name to initialize `PlacesAutocomplete` after google script is loaded |
+| [`clearSuggestionOnSelect`](#clearSuggestionOnSelect)     | boolean  |                    | Component will clear suggestion on onSelect function only if this flag is set `true`                               |
+| [`excludeTypes`](#excludeTypes)     | array  |                    | Array of `types` used to filter the prediction from response of Google Maps API                               |
 
 <a name="value"></a>
 
@@ -267,7 +265,8 @@ An example of a suggestion object.
     { offset: 15, value: "CA" },
     { offset: 19, value: "USA" }
   ],
-  types: ["locality", "political", "geocode"]
+  types: ["locality", "political", "geocode"],
+  distance_meters: 123,
 }
 ```
 
@@ -467,6 +466,7 @@ src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&c
 * [`geocodeByAddress`](#geocode-by-address)
 * [`geocodeByPlaceId`](#geocode-by-place-id)
 * [`getLatLng`](#get-lat-lng)
+* [`getSessionToken`]
 
 <a name="geocode-by-address"></a>
 
@@ -555,10 +555,6 @@ geocodeByAddress('Tokyo, Japan')
     console.log('Successfully got latitude and longitude', { lat, lng })
   );
 ```
-
-### Discussion
-
-Join us on [Gitter](https://gitter.im/react-places-autocomplete/Lobby) if you are interested in contributing!
 
 ### License
 

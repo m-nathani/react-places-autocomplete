@@ -1,8 +1,7 @@
 /*
-* Copyright (c) 2016-present, Ken Hibino.
-* Licensed under the MIT License (MIT).
-* See https://kenny-hibino.github.io/react-places-autocomplete
-*/
+ * Copyright (c) 2016-present, Ken Hibino.
+ * Licensed under the MIT License (MIT).
+ */
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -13,7 +12,7 @@ import { compose } from './helpers';
 const formattedSuggestion = structured_formatting => ({
   mainText: structured_formatting.main_text,
   secondaryText: structured_formatting.secondary_text,
-  mainTextMatchedSubstrings: structured_formatting.main_text_matched_substrings
+  mainTextMatchedSubstrings: structured_formatting.main_text_matched_substrings,
 });
 
 class PlacesAutocomplete extends React.Component {
@@ -85,7 +84,7 @@ class PlacesAutocomplete extends React.Component {
     }
     const { highlightFirstSuggestion } = this.props;
     this.setState({
-      suggestions: predictions.map((p, idx) => ({
+      suggestions: this.filterSuggestionWithTypes(predictions).map((p, idx) => ({
         id: p.id,
         description: p.description,
         placeId: p.place_id,
@@ -95,10 +94,18 @@ class PlacesAutocomplete extends React.Component {
         matchedSubstrings: p.matched_substrings,
         terms: p.terms,
         types: p.types,
-        distance_meters: p.distance_meters
+        distance_meters: p.distance_meters,
       })),
     });
   };
+
+  filterSuggestionWithTypes = (suggestions) => {
+    const { excludeTypes = [] } = this.props;
+    if(excludeTypes.length) {
+      return suggestions.filter(s => !(s.types.length === 1 && excludeTypes.some(type => s.types.includes(type))));
+    }
+    return suggestions;
+  }
 
   fetchPredictions = () => {
     const { value } = this.props;
@@ -129,7 +136,7 @@ class PlacesAutocomplete extends React.Component {
 
   handleSelect = (address, placeId, suggestion = {}) => {
     const { clearSuggestionOnSelect } = this.props;
-    if(clearSuggestionOnSelect) this.clearSuggestions();
+    if (clearSuggestionOnSelect) this.clearSuggestions();
     if (this.props.onSelect) {
       this.props.onSelect(address, placeId, suggestion);
     } else {
@@ -159,7 +166,11 @@ class PlacesAutocomplete extends React.Component {
     if (activeSuggestion === undefined) {
       this.handleSelect(this.props.value, null);
     } else {
-      this.handleSelect(activeSuggestion.description, activeSuggestion.placeId, activeSuggestion);
+      this.handleSelect(
+        activeSuggestion.description,
+        activeSuggestion.placeId,
+        activeSuggestion
+      );
     }
   };
 
@@ -380,13 +391,14 @@ PlacesAutocomplete.propTypes = {
     location: PropTypes.object,
     offset: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     radius: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    types: PropTypes.array
+    types: PropTypes.array,
   }),
   debounce: PropTypes.number,
   highlightFirstSuggestion: PropTypes.bool,
   shouldFetchSuggestions: PropTypes.bool,
   googleCallbackName: PropTypes.string,
-  clearSuggestionOnSelect: PropTypes.bool
+  clearSuggestionOnSelect: PropTypes.bool,
+  excludeTypes: PropTypes.array,
 };
 
 PlacesAutocomplete.defaultProps = {
@@ -402,6 +414,7 @@ PlacesAutocomplete.defaultProps = {
   debounce: 200,
   highlightFirstSuggestion: false,
   shouldFetchSuggestions: true,
+  excludeTypes: []
 };
 
 export default PlacesAutocomplete;
