@@ -102,7 +102,7 @@ class PlacesAutocomplete extends React.Component {
   filterSuggestionWithTypes = (suggestions) => {
     const { excludeTypes = [] } = this.props;
     if(excludeTypes.length) {
-      return suggestions.filter(s => !(s.types.length === 1 && excludeTypes.some(type => s.types.includes(type))));
+      return suggestions.filter(s => !(excludeTypes.every(type => s.types.includes(type))));
     }
     return suggestions;
   }
@@ -239,11 +239,15 @@ class PlacesAutocomplete extends React.Component {
   };
 
   handleInputChange = event => {
+    const { userInputValue } = this.state;
     const { value } = event.target;
     this.props.onChange(value);
     this.setState({ userInputValue: value });
     if (!value) {
       this.clearSuggestions();
+      return;
+    }
+    if(userInputValue.trim() === value.trim()) {
       return;
     }
     if (this.props.shouldFetchSuggestions) {
