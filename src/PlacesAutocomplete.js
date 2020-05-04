@@ -9,10 +9,10 @@ import debounce from 'lodash.debounce';
 import { compose } from './helpers';
 
 // transform snake_case to camelCase
-const formattedSuggestion = structured_formatting => ({
+const formattedSuggestion = (structured_formatting) => ({
   mainText: structured_formatting.main_text,
   secondaryText: structured_formatting.secondary_text,
-  mainTextMatchedSubstrings: structured_formatting.main_text_matched_substrings,
+  mainTextMatchedSubstrings: structured_formatting.main_text_matched_substrings
 });
 
 class PlacesAutocomplete extends React.Component {
@@ -23,13 +23,10 @@ class PlacesAutocomplete extends React.Component {
       loading: false,
       suggestions: [],
       userInputValue: props.value,
-      ready: !props.googleCallbackName,
+      ready: !props.googleCallbackName
     };
 
-    this.debouncedFetchPredictions = debounce(
-      this.fetchPredictions,
-      this.props.debounce
-    );
+    this.debouncedFetchPredictions = debounce(this.fetchPredictions, this.props.debounce);
   }
 
   componentDidMount() {
@@ -67,7 +64,7 @@ class PlacesAutocomplete extends React.Component {
 
     this.autocompleteService = new window.google.maps.places.AutocompleteService();
     this.autocompleteOK = window.google.maps.places.PlacesServiceStatus.OK;
-    this.setState(state => {
+    this.setState((state) => {
       if (state.ready) {
         return null;
       } else {
@@ -94,18 +91,18 @@ class PlacesAutocomplete extends React.Component {
         matchedSubstrings: p.matched_substrings,
         terms: p.terms,
         types: p.types,
-        distance_meters: p.distance_meters,
-      })),
+        distance_meters: p.distance_meters
+      }))
     });
   };
 
   filterSuggestionWithTypes = (suggestions) => {
     const { excludeTypes = [] } = this.props;
-    if(excludeTypes.length) {
-      return suggestions.filter(s => !(excludeTypes.every(type => s.types.includes(type))));
+    if (excludeTypes.length) {
+      return suggestions.filter((s) => !excludeTypes.every((type) => s.types.includes(type)));
     }
     return suggestions;
-  }
+  };
 
   fetchPredictions = () => {
     const { value } = this.props;
@@ -114,7 +111,7 @@ class PlacesAutocomplete extends React.Component {
       this.autocompleteService.getPlacePredictions(
         {
           ...this.props.searchOptions,
-          input: value,
+          input: value
         },
         this.autocompleteCallback
       );
@@ -127,10 +124,10 @@ class PlacesAutocomplete extends React.Component {
 
   clearActive = () => {
     this.setState({
-      suggestions: this.state.suggestions.map(suggestion => ({
+      suggestions: this.state.suggestions.map((suggestion) => ({
         ...suggestion,
-        active: false,
-      })),
+        active: false
+      }))
     });
   };
 
@@ -145,13 +142,11 @@ class PlacesAutocomplete extends React.Component {
   };
 
   getActiveSuggestion = () => {
-    return this.state.suggestions.find(suggestion => suggestion.active);
+    return this.state.suggestions.find((suggestion) => suggestion.active);
   };
 
-  selectActiveAtIndex = index => {
-    const activeName = this.state.suggestions.find(
-      suggestion => suggestion.index === index
-    ).description;
+  selectActiveAtIndex = (index) => {
+    const activeName = this.state.suggestions.find((suggestion) => suggestion.index === index).description;
     this.setActiveAtIndex(index);
     this.props.onChange(activeName);
   };
@@ -166,11 +161,7 @@ class PlacesAutocomplete extends React.Component {
     if (activeSuggestion === undefined) {
       this.handleSelect(this.props.value, null);
     } else {
-      this.handleSelect(
-        activeSuggestion.description,
-        activeSuggestion.placeId,
-        activeSuggestion
-      );
+      this.handleSelect(activeSuggestion.description, activeSuggestion.placeId, activeSuggestion);
     }
   };
 
@@ -204,7 +195,7 @@ class PlacesAutocomplete extends React.Component {
     }
   };
 
-  handleInputKeyDown = event => {
+  handleInputKeyDown = (event) => {
     /* eslint-disable indent */
     switch (event.key) {
       case 'Enter':
@@ -226,7 +217,7 @@ class PlacesAutocomplete extends React.Component {
     /* eslint-enable indent */
   };
 
-  setActiveAtIndex = index => {
+  setActiveAtIndex = (index) => {
     this.setState({
       suggestions: this.state.suggestions.map((suggestion, idx) => {
         if (idx === index) {
@@ -234,11 +225,11 @@ class PlacesAutocomplete extends React.Component {
         } else {
           return { ...suggestion, active: false };
         }
-      }),
+      })
     });
   };
 
-  handleInputChange = event => {
+  handleInputChange = (event) => {
     const { userInputValue } = this.state;
     const { value } = event.target;
     this.props.onChange(value);
@@ -247,7 +238,7 @@ class PlacesAutocomplete extends React.Component {
       this.clearSuggestions();
       return;
     }
-    if(userInputValue.trim() === value.trim()) {
+    if (userInputValue.trim() === value.trim()) {
       return;
     }
     if (this.props.shouldFetchSuggestions) {
@@ -263,9 +254,7 @@ class PlacesAutocomplete extends React.Component {
 
   getActiveSuggestionId = () => {
     const activeSuggestion = this.getActiveSuggestion();
-    return activeSuggestion
-      ? `PlacesAutocomplete__suggestion-${activeSuggestion.placeId}`
-      : undefined;
+    return activeSuggestion ? `PlacesAutocomplete__suggestion-${activeSuggestion.placeId}` : undefined;
   };
 
   getIsExpanded = () => {
@@ -274,9 +263,7 @@ class PlacesAutocomplete extends React.Component {
 
   getInputProps = (options = {}) => {
     if (options.hasOwnProperty('value')) {
-      throw new Error(
-        '[react-places-autocomplete]: getInputProps does not accept `value`. Use `value` prop instead'
-      );
+      throw new Error('[react-places-autocomplete]: getInputProps does not accept `value`. Use `value` prop instead');
     }
 
     if (options.hasOwnProperty('onChange')) {
@@ -292,7 +279,7 @@ class PlacesAutocomplete extends React.Component {
       'aria-autocomplete': 'list',
       'aria-expanded': this.getIsExpanded(),
       'aria-activedescendant': this.getActiveSuggestionId(),
-      disabled: !this.state.ready,
+      disabled: !this.state.ready
     };
 
     return {
@@ -301,21 +288,15 @@ class PlacesAutocomplete extends React.Component {
       onKeyDown: compose(this.handleInputKeyDown, options.onKeyDown),
       onBlur: compose(this.handleInputOnBlur, options.onBlur),
       value: this.props.value,
-      onChange: event => {
+      onChange: (event) => {
         this.handleInputChange(event);
-      },
+      }
     };
   };
 
   getSuggestionItemProps = (suggestion, options = {}) => {
-    const handleSuggestionMouseEnter = this.handleSuggestionMouseEnter.bind(
-      this,
-      suggestion.index
-    );
-    const handleSuggestionClick = this.handleSuggestionClick.bind(
-      this,
-      suggestion
-    );
+    const handleSuggestionMouseEnter = this.handleSuggestionMouseEnter.bind(this, suggestion.index);
+    const handleSuggestionClick = this.handleSuggestionClick.bind(this, suggestion);
 
     return {
       ...options,
@@ -323,22 +304,16 @@ class PlacesAutocomplete extends React.Component {
       id: this.getActiveSuggestionId(),
       role: 'option',
       onMouseEnter: compose(handleSuggestionMouseEnter, options.onMouseEnter),
-      onMouseLeave: compose(
-        this.handleSuggestionMouseLeave,
-        options.onMouseLeave
-      ),
+      onMouseLeave: compose(this.handleSuggestionMouseLeave, options.onMouseLeave),
       onMouseDown: compose(this.handleSuggestionMouseDown, options.onMouseDown),
       onMouseUp: compose(this.handleSuggestionMouseUp, options.onMouseUp),
-      onTouchStart: compose(
-        this.handleSuggestionTouchStart,
-        options.onTouchStart
-      ),
+      onTouchStart: compose(this.handleSuggestionTouchStart, options.onTouchStart),
       onTouchEnd: compose(this.handleSuggestionMouseUp, options.onTouchEnd),
-      onClick: compose(handleSuggestionClick, options.onClick),
+      onClick: compose(handleSuggestionClick, options.onClick)
     };
   };
 
-  handleSuggestionMouseEnter = index => {
+  handleSuggestionMouseEnter = (index) => {
     this.setActiveAtIndex(index);
   };
 
@@ -347,7 +322,7 @@ class PlacesAutocomplete extends React.Component {
     this.clearActive();
   };
 
-  handleSuggestionMouseDown = event => {
+  handleSuggestionMouseDown = (event) => {
     event.preventDefault();
     this.mousedownOnSuggestion = true;
   };
@@ -376,7 +351,7 @@ class PlacesAutocomplete extends React.Component {
       getInputProps: this.getInputProps,
       getSuggestionItemProps: this.getSuggestionItemProps,
       loading: this.state.loading,
-      suggestions: this.state.suggestions,
+      suggestions: this.state.suggestions
     });
   }
 }
@@ -395,14 +370,14 @@ PlacesAutocomplete.propTypes = {
     location: PropTypes.object,
     offset: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     radius: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    types: PropTypes.array,
+    types: PropTypes.array
   }),
   debounce: PropTypes.number,
   highlightFirstSuggestion: PropTypes.bool,
   shouldFetchSuggestions: PropTypes.bool,
   googleCallbackName: PropTypes.string,
   clearSuggestionOnSelect: PropTypes.bool,
-  excludeTypes: PropTypes.array,
+  excludeTypes: PropTypes.array
 };
 
 PlacesAutocomplete.defaultProps = {

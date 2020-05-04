@@ -467,6 +467,7 @@ src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&c
 * [`geocodeByPlaceId`](#geocode-by-place-id)
 * [`getLatLng`](#get-lat-lng)
 * [`getSessionToken`]
+* [`reverseGeocoding`](#reverse-geocode)
 
 <a name="geocode-by-address"></a>
 
@@ -522,6 +523,35 @@ import { geocodeByPlaceId } from 'react-places-autocomplete';
 
 // `results` is an entire payload from Google API.
 geocodeByPlaceId('ChIJE9on3F3HwoAR9AhGJW_fL-I')
+  .then(results => console.log(results))
+  .catch(error => console.error(error));
+```
+
+<a name="reverse-geocode"></a>
+
+### `reverseGeocoding` API
+
+```js
+/**
+ * Returns a promise
+ * @param {Object} location
+ * @return {Promise}
+ */
+reverseGeocoding(address);
+```
+
+#### location
+
+Type: `Object`,
+Required: `true`
+
+Object that gets passed to Google Maps [Geocoder](https://developers.google.com/maps/documentation/javascript/geocoding)
+
+```js
+import { reverseGeocoding } from 'react-places-autocomplete';
+
+// `results` is an entire payload from Google API.
+reverseGeocoding({ location: {lat: 0.1: lng: 0.1} })
   .then(results => console.log(results))
   .catch(error => console.error(error));
 ```

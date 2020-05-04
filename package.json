@@ -1,6 +1,6 @@
 {
   "name": "@umai/react-places-autocomplete",
-  "version": "7.2.10",
+  "version": "7.3.1",
   "description": "A React component for Google Maps Places Autocomplete",
   "main": "dist/index.js",
   "scripts": {
